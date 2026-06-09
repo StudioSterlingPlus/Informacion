@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sterling Studio</title>
+  <style>
+    :root{
+      --bg1:#050816;
+      --bg2:#0b1230;
+      --card: rgba(10, 15, 35, 0.72);
+      --card2: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --text:#edf2ff;
+      --muted:#b9c3e6;
+      --accent:#8a7dff;
+      --accent2:#7af0ff;
+      --good:#5ef0b2;
+      --warn:#ff7da5;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+
+
+    @font-face{
+      font-family: 'FuenteSterling';
+      src: url('fuente/fuente.ttf') format('truetype');
+      font-display: swap;
+    }
+
+    *{ box-sizing:border-box; }
+    html, body{
+      margin:0;
+      min-height:100%;
+      font-family: 'FuenteSterling', Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(122,240,255,.20), transparent 22%),
+        radial-gradient(circle at 85% 12%, rgba(138,125,255,.18), transparent 22%),
+        radial-gradient(circle at 50% 85%, rgba(255,125,165,.10), transparent 26%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    .stars, .stars:before, .stars:after{
+      position: fixed;
+      inset: 0;
+      content:"";
+      pointer-events:none;
+      background-repeat: repeat;
+      z-index:0;
+    }
+    .stars{
+      opacity:.8;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.9) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 70px 90px, rgba(255,255,255,.75) 50%, transparent 51%),
+        radial-gradient(1px 1px at 140px 60px, rgba(255,255,255,.65) 50%, transparent 51%),
+        radial-gradient(1.2px 1.2px at 200px 160px, rgba(255,255,255,.85) 50%, transparent 51%);
+      background-size: 240px 240px;
+      animation: drift 80s linear infinite;
+    }
+    .stars:before{
+      opacity:.55;
+      background-image:
+        radial-gradient(1px 1px at 40px 80px, rgba(255,255,255,.6) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 120px 40px, rgba(255,255,255,.9) 50%, transparent 51%),
+        radial-gradient(2px 2px at 180px 120px, rgba(255,255,255,.7) 50%, transparent 51%);
+      background-size: 280px 280px;
+      animation: drift2 120s linear infinite;
+    }
+    .stars:after{
+      opacity:.45;
+      background-image:
+        radial-gradient(1px 1px at 30px 50px, rgba(122,240,255,.9) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 160px 170px, rgba(138,125,255,.8) 50%, transparent 51%),
+        radial-gradient(1px 1px at 210px 30px, rgba(255,255,255,.8) 50%, transparent 51%);
+      background-size: 320px 320px;
+      animation: drift3 150s linear infinite;
+    }
+
+    @keyframes drift { from { transform: translateY(0); } to { transform: translateY(-320px); } }
+    @keyframes drift2 { from { transform: translateX(0); } to { transform: translateX(-280px); } }
+    @keyframes drift3 { from { transform: translate(0,0); } to { transform: translate(220px,-220px); } }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:1120px;
+      margin:0 auto;
+      padding:32px 18px 50px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      align-items:stretch;
+      margin-top:18px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius:24px;
+    }
+
+    .profile{
+      padding:28px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .profile:after{
+      content:"";
+      position:absolute;
+      inset:auto -10% -30% auto;
+      width:260px;
+      height:260px;
+      background: radial-gradient(circle, rgba(122,240,255,.18), transparent 65%);
+      filter: blur(4px);
+      pointer-events:none;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .brand-logo{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background: linear-gradient(135deg, rgba(138,125,255,.9), rgba(122,240,255,.85));
+      color:#081022;
+      font-weight:900;
+      letter-spacing:-0.04em;
+      box-shadow: 0 12px 30px rgba(122,240,255,.22);
+      flex:0 0 auto;
+      overflow:hidden;
+      position:relative;
+    }
+    .brand-logo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .brand-logo .emoji{
+      display:none;
+      font-size:18px;
+      line-height:1;
+    }
+    .brand-name{
+      font-size:18px;
+      color:#fff;
+      font-weight:700;
+      line-height:1.1;
+    }
+    .brand-sub{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
+      font-weight:400;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:18px;
+    }
+    .badge-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--good);
+      box-shadow:0 0 12px var(--good);
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(30px, 5vw, 56px);
+      line-height:1.02;
+      letter-spacing:-0.03em;
+    }
+
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.7;
+      max-width:68ch;
+    }
+
+    .side{
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .panel-title{
+      margin:0 0 6px;
+      font-size:18px;
+      letter-spacing:.02em;
+    }
+
+    .mini{
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--card2);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .mini strong{
+      display:block;
+      font-size:14px;
+      color:#ffffff;
+      margin-bottom:8px;
+    }
+
+    .mini a, .mini span{
+      color:var(--muted);
+      text-decoration:none;
+      word-break:break-word;
+      line-height:1.5;
+      font-size:14px;
+    }
+
+    .contact-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+
+    .btnlink{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:14px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      text-decoration:none;
+      color:#fff;
+      background: linear-gradient(135deg, rgba(138,125,255,.38), rgba(122,240,255,.16));
+      transition: transform .18s ease, filter .18s ease, background .18s ease;
+      font-weight:700;
+      min-height:56px;
+    }
+    .btnlink:hover{
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      background: linear-gradient(135deg, rgba(138,125,255,.52), rgba(122,240,255,.25));
+    }
+    .btnlink svg{
+      width:20px;
+      height:20px;
+      flex:0 0 auto;
+      fill: currentColor;
+    }
+
+    .section{
+      margin-top:18px;
+      padding:24px;
+    }
+
+    .section h2{
+      margin:0 0 16px;
+      font-size:24px;
+    }
+
+    .apps{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+
+    .app{
+      padding:20px 18px 18px;
+      border-radius:18px;
+      background:var(--card2);
+      border:1px solid rgba(255,255,255,.08);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      gap:12px;
+      min-height:260px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .iconbox{
+      width:74px;
+      height:74px;
+      border-radius:18px;
+      overflow:hidden;
+      flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+      background: rgba(255,255,255,.08);
+      display:grid;
+      place-items:center;
+      margin-top:4px;
+    }
+    .iconbox img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .iconbox .emoji{
+      font-size:28px;
+      line-height:1;
+      display:none;
+    }
+
+    .app > div:last-child{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      flex:1;
+      min-width:0;
+    }
+
+    .app h3{
+      margin:0 0 8px;
+      font-size:18px;
+      line-height:1.15;
+    }
+
+    .app p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      max-width: 24ch;
+    }
+
+    .status{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:auto;
+      margin-bottom:0;
+      font-size:13px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      align-self:center;
+      justify-content:center;
+      width: fit-content;
+      max-width:100%;
+    }
+    .status .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      flex:0 0 auto;
+    }
+    .status.active .dot{ background:var(--good); box-shadow:0 0 12px var(--good); }
+    .status.off .dot{ background:var(--warn); box-shadow:0 0 12px var(--warn); }
+
+    .footer{
+      margin-top:18px;
+      padding:18px 24px;
+      text-align:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    @media (max-width: 860px){
+      .hero{ grid-template-columns:1fr; }
+      .contact-grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <main class="wrap">
+    <section class="hero">
+      <article class="card profile">
+        <div class="brand">
+          <div class="brand-logo">
+            <img src="icono/Sterling Studio.png" alt="Sterling Studio" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">SS</span>
+          </div>
+          <div>
+            <div class="brand-name">Sterling Studio</div>
+            <span class="brand-sub">Apps Android · +18</span>
+          </div>
+        </div>
+
+        <div class="badge"><span class="badge-dot"></span> Desarrollador Android · Apps +18</div>
+        <h1>Sterling Studio</h1>
+        <p class="subtitle">
+          Desarrollo aplicaciones Android para público adulto (+18). Aquí puedes ver mis apps, su estado y mis contactos.
+        </p>
+      </article>
+
+      <aside class="card side">
+        <div>
+          <h3 class="panel-title">Contactos</h3>
+        </div>
+
+        <div class="contact-grid">
+          <a class="btnlink" href="https://www.paypal.me/SterlingStudio342" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7.5 20.5h2.6l.6-3.7h1.8c3.9 0 6.4-1.9 7-5.5.3-1.6.1-3-.8-4-.9-1.1-2.5-1.6-4.6-1.6H8.4c-.4 0-.8.3-.9.7L5.8 19.7c-.1.4.2.8.7.8h1zm4.9-9.1c.2-1.2 1.1-1.8 2.6-1.8h1.2c1.6 0 2.3.7 2 2.1-.3 1.6-1.4 2.2-3.1 2.2h-2.5l-.2 1.4H10l.8-5.1h1.8l-.2 1.2z"/>
+            </svg>
+            PayPal
+          </a>
+
+          <a class="btnlink" href="https://t.me/OnimaruDev" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21.7 4.6 19 19.2c-.2 1.1-.9 1.4-1.8.9l-4.9-3.6-2.4 2.3c-.3.3-.6.6-1.2.6l.4-5.1 9.3-8.4c.4-.4-.1-.5-.6-.2L6.2 14.9 1.3 13.4c-1.1-.3-1.1-1.1.2-1.6L20.1 3c.9-.3 1.7.2 1.6 1.6z"/>
+            </svg>
+            Telegram
+          </a>
+
+          <a class="btnlink" href="https://www.tiktok.com/@onimarudev_telegram" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16.7 3.2c.7 1.4 1.8 2.3 3.3 2.6v3.1c-1.2 0-2.4-.3-3.4-.8v5.3c0 3.3-2.7 5.9-6 5.9-1.6 0-3.1-.6-4.2-1.7S4.7 15 4.7 13.4c0-3.3 2.7-6 6-6 .3 0 .5 0 .8.1v3.3c-.2-.1-.5-.1-.7-.1-1.5 0-2.8 1.2-2.8 2.8s1.2 2.8 2.8 2.8c1.6 0 2.9-1.3 2.9-2.9V3.2h3z"/>
+            </svg>
+            TikTok
+          </a>
+        </div>
+
+      </aside>
+    </section>
+
+    <section class="card section">
+      <h2>Mis aplicaciones</h2>
+      <div class="apps">
+        <article class="app">
+          <div class="iconbox">
+            <img src="icono/Clyra.png" alt="Clyra" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">📱</span>
+          </div>
+          <div>
+            <h3>Clyra</h3>
+            <p>Aplicación activa en mantenimiento y desarrollo.</p>
+            <div class="status active"><span class="dot"></span> Todavía activa</div>
+          </div>
+        </article>
+
+  <article class="app">
+          <div class="iconbox">
+            <img src="icono/Voxy.png" alt="Voxy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">📱</span>
+          </div>
+          <div>
+            <h3>Voxy</h3>
+            <p>Aplicación de protección de contenido multimedia.</p>
+            <div class="status active"><span class="dot"></span> En desarrollo</div>
+          </div>
+        </article>
+
+        <article class="app">
+          <div class="iconbox">
+            <img src="icono/Giffany.png" alt="Giffany" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">🗂️</span>
+          </div>
+          <div>
+            <h3>Giffany</h3>
+            <p>Proyecto finalizado y retirado del catálogo.</p>
+            <div class="status off"><span class="dot"></span> Ya descontinuada</div>
+          </div>
+        </article>
+
+        <article class="app">
+          <div class="iconbox">
+            <img src="icono/Vixen store.png" alt="Vixen store" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">🛍️</span>
+          </div>
+          <div>
+            <h3>Vixen store</h3>
+            <p>Tienda o plataforma que ya no está en uso.</p>
+            <div class="status off"><span class="dot"></span> Ya descontinuada</div>
+          </div>
+        </article>
+
+     <article class="app">
+          <div class="iconbox">
+            <img src="icono/Skycomix.png" alt="Skycomix" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">🛍️</span>
+          </div>
+          <div>
+            <h3>Vixen store</h3>
+            <p>Plataforma de cómics hentai.</p>
+            <div class="status off"><span class="dot"></span> Ya descontinuada</div>
+          </div>
+        </article>
+
+        <article class="app">
+          <div class="iconbox">
+            <img src="icono/The owl hot.png" alt="The owl hot" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">🦉</span>
+          </div>
+          <div>
+            <h3>The owl hot</h3>
+            <p>Aplicación descontinuada y archivada.</p>
+            <div class="status off"><span class="dot"></span> Ya descontinuada</div>
+          </div>
+        </article>
+
+        <article class="app">
+          <div class="iconbox">
+            <img src="icono/Geo almace.png" alt="Geo almace" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="emoji">📍</span>
+          </div>
+          <div>
+            <h3>Geo almace</h3>
+            <p>Proyecto descontinuado que formó parte de tu historial de aplicaciones.</p>
+            <div class="status off"><span class="dot"></span> Ya descontinuada</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="card footer">
+      © 2026 Sterling Studio
+    </div>
+  </main>
+</body>
+</html>
